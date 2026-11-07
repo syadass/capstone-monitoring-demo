@@ -31,34 +31,29 @@ const ViewerDashboard = () => {
       <ScadaStyles />
       <Header role="viewer" />
       <div className="p-6">
-        <div className="flex justify-between items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Monitoring Tungku</h1>
-            <p className="text-sm text-gray-500">Pantauan data suhu & tekanan secara waktu nyata (simulasi demo).</p>
-          </div>
-          <div className="flex items-center gap-2 p-2 bg-white rounded-full shadow-md border border-gray-200">
-            <span
-              className={`h-3 w-3 rounded-full ${isSimActive ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}
-            ></span>
-            <span className="text-xs font-semibold text-gray-600">
-              {isSimActive ? 'Simulasi Aktif' : 'Simulasi Mati'}
-            </span>
+        <div className="flex justify-center items-center gap-4 mb-10">
+          <h1 className="text-3xl font-bold text-gray-800">Monitoring Furnace</h1>
+          <div className="flex items-center gap-2 p-2 bg-white rounded-full shadow-md">
+            <span className={`h-4 w-4 rounded-full ${isSimActive ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+            <span className="font-semibold">{isSimActive ? 'MQTT Connected' : 'MQTT Disconnected'}</span>
           </div>
         </div>
 
         <div className="flex flex-wrap justify-center items-start gap-16">
           {FURNACE_IDS.map((furnace, index) => {
-            const status = furnaceStatuses[furnace] || {}
+            const status = furnaceStatuses[furnace]
             const data = liveData[furnace] || { suhu: '0.0', tekanan: '0.00' }
-            const active = status.is_active
+            const activeUser = status?.is_active
+              ? status?.active_user_fullname || `User ${status.active_user_id}`
+              : null
 
             return (
               <div key={furnace} className="relative p-4" style={{ minWidth: '350px', minHeight: '400px' }}>
-                {active && (
+                {activeUser && (
                   <div className="absolute top-2 right-2 flex items-center justify-center z-30">
-                    <span className="text-sm font-bold p-2 bg-yellow-600 text-white rounded-lg shadow-xl border border-yellow-400">
-                      AKTIF: {status.active_user_fullname || 'User'}
-                    </span>
+                    <p className="text-sm font-bold p-2 bg-yellow-600 text-white rounded-lg shadow-xl border border-yellow-400">
+                      ACTIVE: {activeUser}
+                    </p>
                   </div>
                 )}
                 <div className="flex justify-center items-center gap-8">
